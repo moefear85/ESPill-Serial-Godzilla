@@ -1,0 +1,5 @@
+/* CAVEATS
+*** UART_PIN_NO_CHANGE doesn't mean "use factory default pin", it means "use same pin as last time". Hence UART might not work until pins properly setup
+*** When uart_enable_rx_intr is called, then atleast all read timeouts passed as parameters to uart functions, have no effect, thus block indefinately. It is overridable by calling uart_set_rx_timeout() explicitly after interrupt registering, but before the uart read.
+*** If no AP found, hence default channel 1 used, then full scans must be used, which will keep interrupting the wireless stream. Either scanning must totally stop (and indicated ZB with LED to user) until restart, or there is no point in setting defaults and wireless is not usable until an AP is found again.
+*/

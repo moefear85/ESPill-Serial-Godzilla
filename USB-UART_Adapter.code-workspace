@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"functional": "c",
+			"tusb_cdc_acm.h": "c",
+			"*.ipp": "c"
+		}
+	}
+}
