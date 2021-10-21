@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"functional": "c",
+			"xutility": "c",
+			"*.ipp": "c",
+			"*.inc": "c",
+			"chrono": "c",
+			"algorithm": "c",
+			"main.h": "c",
+			"typeinfo": "c"
+		}
+	}
+}
