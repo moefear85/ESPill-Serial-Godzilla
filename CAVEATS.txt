@@ -1,5 +1,8 @@
 /* CAVEATS
-*** UART_PIN_NO_CHANGE doesn't mean "use factory default pin", it means "use same pin as last time". Hence UART might not work until pins properly setup
+*** When flashing a seemingly exact copy from GDrive archives, rts/dtr would not work correctly unless the target GND is connected to the programming esp's (in this case the usb-uart-adapter). This may happen indirectly by connecting the programming header of the usb-uart-adapter's header itself. But even then, it requires a 1 kOhm series Resister on the DTR line connecting adapter to target. Then it works. After flashing this commit, it seems to work even without in-/directly connected grounds (the usb ground is ultimately connected to the same ground, but going all the way through the power sources/converters). Still the 1kOhm is necessary, irrespective if GNDs are un-/connected. The adapter previously was seemingly unstable, even with wifi disabled. No instability is seen anymore, even without any resistors or connected GNDs, but wifi is still disabled.
+
+
+*** UART_PIN_NO_CHANGE doesn't seem to mean "use factory default pin", it means "use same pin as last time". Hence UART might not work until pins properly setup
 *** When uart_enable_rx_intr is called, then atleast all read timeouts passed as parameters to uart functions, have no effect, thus block indefinately. It is overridable by calling uart_set_rx_timeout() explicitly after interrupt registering, but before the uart read.
 *** If no AP found, hence default channel 1 used, then full scans must be used, which will keep interrupting the wireless stream. Either scanning must totally stop (and indicated ZB with LED to user) until restart, or there is no point in setting defaults and wireless is not usable until an AP is found again.
 */
