@@ -1,5 +1,7 @@
 #include "uart.h"
 
+TaskHandle_t uartLoopHandle;
+
 void uartSetup()
 {
     uart_config_t uart_config = 
@@ -12,9 +14,11 @@ void uartSetup()
     ESP_ERROR_CHECK( uart_param_config(UART_NUM_1, &uart_config));
     ESP_ERROR_CHECK( uart_set_pin(UART_NUM_1, 12, 11, 17, 18));
     ESP_ERROR_CHECK( uart_driver_install(UART_NUM_1, 1024, 1024, 0, NULL, 0) );
+
+    xTaskCreate(uartLoop, NULL, 2048, NULL, 0, &uartLoopHandle);
 }
 
-void uartLoop()
+void uartLoop(void* args)
 {
     uint8_t buf[11];
     buf[10] = 0;
