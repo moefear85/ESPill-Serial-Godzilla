@@ -1,7 +1,6 @@
 #ifndef USB_H
 #define USB_H
 
-#include "wifi.h"
 #include "uart.h"
 #include "tinyusb.h"
 #include "tusb_cdc_acm.h"

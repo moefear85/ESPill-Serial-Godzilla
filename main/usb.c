@@ -26,9 +26,6 @@ void usbCallback(int itf, cdcacm_event_t *event)
     esp_err_t ret = tinyusb_cdcacm_read(itf, buf + 1, USBBUFSIZE, &rx_size);
     if (ret == ESP_OK)
         buf[rx_size + 1] = '\0';
-    
-    buf[0] = data;
-    esp_now_send(targetAddress, buf, rx_size + 1);
 
     uart_write_bytes(UART_NUM_1, buf + 1, rx_size);
     uart_wait_tx_done(UART_NUM_1, 1000);
