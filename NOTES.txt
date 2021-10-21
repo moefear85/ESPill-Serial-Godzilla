@@ -1,0 +1,10 @@
+1- Only when Log Level is set to verbose, does any USB connect info become visible. Only connects are detectable.
+Disconnects don't cause any activity. Not sure what the return value of any functions would be. The following is helpful:
+
+V (645791) TUSB:DCD: dcd_int_handler - reset
+V (645791) TUSB:DCD: dcd_int_handler - reset while suspend
+V (645811) TUSB:DCD: dcd_int_handler - Speed enumeration done! Sending DCD_EVENT_BUS_RESET then
+V (645991) TUSB:DCD: dcd_int_handler - rx!
+
+
+From it, it is clear there is some dcd_int_handler involved. Modifying this can give me events. But even better, there seems to be official DCD_EVENT_BUS_RESET events sent out. Find out how to capture them, and see if any disconnect events available.
