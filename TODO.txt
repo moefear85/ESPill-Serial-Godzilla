@@ -1,0 +1,1 @@
+1- Try setting gpio drive capabilities. This might resolve the 1kOhm Resistor need issue.
