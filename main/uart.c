@@ -1,10 +1,8 @@
 #include "uart.h"
 
-static QueueHandle_t uart1_queue;
-
 void uartSetup()
 {
-    uart_config_t uart_config
+    uart_config_t uart_config = 
     {
         .baud_rate = 115200,
         .data_bits = UART_DATA_8_BITS,

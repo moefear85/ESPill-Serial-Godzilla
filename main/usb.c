@@ -28,7 +28,6 @@ void usbCallback(int itf, cdcacm_event_t *event)
         buf[rx_size + 1] = '\0';
 
     uart_write_bytes(UART_NUM_1, buf + 1, rx_size);
-    uart_wait_tx_done(UART_NUM_1, 1000);
 }
 
 void tinyusb_cdc_line_state_changed_callback(int itf, cdcacm_event_t *event)
