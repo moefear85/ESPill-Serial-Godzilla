@@ -8,3 +8,8 @@ V (645991) TUSB:DCD: dcd_int_handler - rx!
 
 
 From it, it is clear there is some dcd_int_handler involved. Modifying this can give me events. But even better, there seems to be official DCD_EVENT_BUS_RESET events sent out. Find out how to capture them, and see if any disconnect events available.
+
+----------------------------------------------------------------------------------------------
+
+* Use wireshark to determine when descriptor data is sent (relative to specific function calls in tusb).
+* by the 7th call to process_get_descriptor(), the whole descriptor (including configuration descriptor & endpoint discriptors), will have been transferred. By the 6th call, lsusb still is not working. dmesg doesn't show any descriptor information yet. It is not clear if some of the descriptor has been transferred yet. But the usb address will have long been set up.
