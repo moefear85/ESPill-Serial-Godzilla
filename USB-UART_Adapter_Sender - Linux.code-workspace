@@ -8,7 +8,8 @@
 		"files.associations": {
 			"functional": "c",
 			"tusb_cdc_acm.h": "c",
-			"*.ipp": "c"
+			"*.ipp": "c",
+			"*.inc": "c"
 		}
 	}
 }

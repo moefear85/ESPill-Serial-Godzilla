@@ -46,12 +46,14 @@ void usbSetup()
     };
     ESP_ERROR_CHECK( tusb_cdc_acm_init(&amc_cfg) );
     amc_cfg.cdc_port=1;
-    //ESP_ERROR_CHECK( tusb_cdc_acm_init(&amc_cfg) );
+    ESP_ERROR_CHECK( tusb_cdc_acm_init(&amc_cfg) );
+    amc_cfg.cdc_port=2;
+    ESP_ERROR_CHECK( tusb_cdc_acm_init(&amc_cfg) );
 }
 
 void usbCallback(int itf, cdcacm_event_t *event)
 {
-    //printf("data, itf: %d\n",itf);
+    printf("data, itf: %d\n",itf);
     size_t rx_size = 0;
     esp_err_t ret = tinyusb_cdcacm_read(itf, buf + 1, USBBUFSIZE, &rx_size);
     if (ret == ESP_OK)
@@ -62,7 +64,7 @@ void usbCallback(int itf, cdcacm_event_t *event)
 
 void tinyusb_cdc_line_state_changed_callback(int itf, cdcacm_event_t *event)
 {
-    //printf("state, itf: %d\n",itf);
+    printf("state, itf: %d\n",itf);
     int dtr = event->line_state_changed_data.dtr;
     int rts = event->line_state_changed_data.rts;
 
@@ -72,7 +74,7 @@ void tinyusb_cdc_line_state_changed_callback(int itf, cdcacm_event_t *event)
 
 void lineCodingCallback(int itf, cdcacm_event_t *event)
 {
-    //printf("coding, itf: %d\n",itf);
+    printf("coding, itf: %d\n",itf);
     int bit_rate = event->line_coding_changed_data.p_line_coding->bit_rate;
     uart_set_baudrate(UART_NUM_1, bit_rate);
 }

@@ -13,3 +13,31 @@ From it, it is clear there is some dcd_int_handler involved. Modifying this can 
 
 * Use wireshark to determine when descriptor data is sent (relative to specific function calls in tusb).
 * by the 7th call to process_get_descriptor(), the whole descriptor (including configuration descriptor & endpoint discriptors), will have been transferred. By the 6th call, lsusb still is not working. dmesg doesn't show any descriptor information yet. It is not clear if some of the descriptor has been transferred yet. But the usb address will have long been set up.
+* Further non-blocking analysis reveals, process_get_descriptor() is called 12 times and does all descriptor handling. It is called twice for descriptor type 1, then 3 times for descriptor type 6, then twice for descriptor type 2, then 5 times for descriptor type 3. This func is in usbd.c. The descriptor types are defined in tusb_types.h. 2 is the configuration descriptor, that contains the number of interfaces field.
+* There is an additions folder, that contains esp-idf specific code. Everything else seems pure tinyusb. In the additions folder, there is descriptors_control.c, which contains the actual instance of desc_configuration.
+
+ 1-TUSB_DESC_DEVICE
+ 2-TUSB_DESC_DEVICE
+ 3-TUSB_DESC_DEVICE_QUALIFIER
+ 4-TUSB_DESC_DEVICE_QUALIFIER
+ 5-TUSB_DESC_DEVICE_QUALIFIER
+ 6-TUSB_DESC_CONFIGURATION
+ 7-TUSB_DESC_CONFIGURATION
+ 8-TUSB_DESC_STRING
+ 9-TUSB_DESC_STRING
+10-TUSB_DESC_STRING
+11-TUSB_DESC_STRING
+12-TUSB_DESC_STRING
+
+* tusb_types.h contains the structs for all the descriptors
+* cdc.h contains the structs for the cdc-specific headers (cdc header & cdc Union)
+
+-------------------------------------------------------------------------------------------------------------------
+1- tinyusb_driver_install(descriptor) is called, passing it our custom descriptor. it checks if this is not null, else uses the descriptor from kconfig. then it calls tusb_set_descriptor() to set that descriptor. Then it calls tusb_init().
+2- tusb_set_descriptor dereferences the descriptor pointer parameter passed to it, and assigns it to the static descriptor "s_descriptor" (of type tusb_desc_device_t) which is defined in descriptors_control.c along with tusb_set_descriptor(). This structure is different than uint8_t desc_configuration[] defined in the same file, which contains atleast the device descriptor and configuration descriptors, and is what is actually read and forwarded by process_get_descriptor().
+3- tinusb_driver_install, after callint tusb_set_descriptor, then calls tusb.c::tusb_init(). Then it calls tusb_tasks.c::tusb_run_task(), which creats a freertos task for tusb_device_task(), which is a wrapper with a forever-loop that calls usbd.c::tud_task(), which itself contains a forever-loop that processes all usb events, including transfers. Specifically the setup events are forwarded to process_get_descriptor() (which does not itself loop). This func ends up called 11 to 12 times.
+4- tusb_init() calls and asserts usbd.c::tud_init().
+5- tud_init() first clears a _usbd_dev of type usb_device_t. It then inits some mutexes and the usb freertos event queue. It then calls usbd.c::get_driver() to get a usbd_class_driver_t, then calls that driver's init(). The struct is just a container for few init related funcs for the driver. The real magic is in get_driver() that checks whether to return a statically implemented _app_driver or _usbd_driver. The driver's init probably initializes/fills the desc_configuration later used by process_get_descriptor(). Then tud_init() calls dcd_init() and dcd_int_enable() which "init the device controller driver".
+6- Then tusb_cdc_acm_init() is called by main(). But it seems unnecessary. esp-idf shows an error message about tinyusb_cdc_init (a function called within it), but the device is still setup correctly and usable by the os, without any errors. probably it gets implicitly called after the error with default kconfig values.
+7- tusb_cdc_acm_init() calls cdc.c::tusb_cdc_acm_init(), then calls get_acm() to get a acm of type esp_tusb_cdcacm_t. It registers the callbacks with it. Then it allocates semaphores and rx/tx buffers.
+8- tusb_cdc_acm_init() has an if/else, for comm vs data, but data is never used. so cdc.c::tusb_cdc_comm_init() gets called by it. tusb_cdc_comm_init() first does cdc_obj_check() on its itf parameter, then calls calloc on cdc_obj (of type esp_tusb_cdc_t). It is an array equal to itf number.
