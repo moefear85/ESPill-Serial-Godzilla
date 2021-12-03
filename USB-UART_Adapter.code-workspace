@@ -13,7 +13,12 @@
 			"chrono": "c",
 			"algorithm": "c",
 			"main.h": "c",
-			"typeinfo": "c"
+			"typeinfo": "c",
+			"tusb.h": "c",
+			"tusb_cdc_acm.h": "c",
+			"tinyusb.h": "c",
+			"tusb_config.h": "c",
+			"tusb_option.h": "c"
 		}
 	}
 }

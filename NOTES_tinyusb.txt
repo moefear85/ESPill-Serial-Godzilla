@@ -1,0 +1,22 @@
+* components/tinyusb/additions/include/tusb_config.h:
+    - 74: #define CFG_TUD_CDC CONFIG_USB_CDC_ENABLED // default CONFIG_USB_CDC_ENABLED is "y". strangely CFG_TUD_CDC evaluates to 1. A method needed to systematically override CONFIG_USB_CDC_ENABLED or CFG_TUD_CDC, giving it a number.
+
+* components/tinyusb/additions/include/tusb_cdc_acm.h:
+    *- 32: tinyusb_cdcacm_itf_t contains enum for names of CDC Ports
+* components/tinyusb/additions/include_private/descriptors_control.h:
+    *- defines anonymous enum containing ITF_NUM_CDC=0, and ITF_NUM_CDC_DATA
+    *- defines anonymous enum containing TUSB_DESC_TOTAL_LEN // **
+* components/tinyusb/additions/src/cdc.c:
+    *- 26: #define CDC_INTF_NUM            CFG_TUD_CDC   // **
+    *- 28: static esp_tusb_cdc_t *cdc_obj[CDC_INTF_NUM] = {};
+* components/tinyusb/additions/src/usb_descriptors.c:
+    *- 26: if CFG_TUD_CDC is defined, modifies device descriptor to support associations // **
+    *- 69: a variant of line 26 exists, involving example configuration // **
+* components/tinyusb/additions/src/descriptors_control.c:
+    *- 30: uint8_t const desc_configuration[] is defined here, using CFG_TUD_CDC, but only 1 interface
+
+TODO:
+* Modify endpoint addresses of further CDC ports when exist
+
+** doesn't need modification if CFG_TUD_CDC is defined as the number of CDC Ports to use. Its default value is 1
+*** Configuration Descriptor's bNumInterfaces is automatically set to proper value

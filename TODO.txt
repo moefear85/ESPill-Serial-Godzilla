@@ -1,1 +1,2 @@
-1- Try setting gpio drive capabilities. This might resolve the 1kOhm Resistor need issue.
+1- Assign all uart0 pins
+2- modify CDC_COUNT define to use sdkconfig value instead

@@ -2,7 +2,7 @@
     "configurations": [
         {
             "name": "ESP-IDF",
-            "compilerPath": "",
+            "compilerPath": "/home/moefear85/Software/.espressif/tools/xtensa-esp32s2-elf/esp-2021r1-8.4.0/xtensa-esp32s2-elf/bin/xtensa-esp32s2-elf-gcc",
             "cStandard": "c11",
             "cppStandard": "c++17",
             "includePath": [
@@ -20,7 +20,7 @@
                     "${config:idf.espAdfPathWin}/components/**",
                     "${workspaceFolder}"
                 ],
-                "limitSymbolsToIncludedHeaders": true
+                "limitSymbolsToIncludedHeaders": false
             },
             "compileCommands": "/media/moefear85/BACKUP/Projects/Programming/ESP32/USB-UART_Adapter/build/compile_commands.json"
         }
