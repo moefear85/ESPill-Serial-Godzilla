@@ -6,7 +6,7 @@ The clou is that it also supports setting/toggling dtr/rts pins, which are used 
 
 Currently, I've only tested it on an esp32s2, as I don't have any esp32s3 yet (in the mail). Thus I don't have any binaries for the esp32s3 yet. Note the esp32s2 only has 2 hardware uarts, so you only get 2 channels. The esp32s3 only has 3, so you get 3. Theoretically, usb allows 5 independent serial (USB CDC-ACM) channels, but atleast the esp32s2 is limited to only 5 active USB IN-endpoints at a time, meaning even though 5 ports would show up on the PC if desired, only 3 of them would actually work (atleast for 1 direction). There might be some workarounds to atleast support these partially (ex. 1-way communication), I'll get around to this when I have time.
 
-All this only became possible after modifying the underlying esp-idf. So the source won't actually compile unless you use the same modified esp-idf that I am using. I'll upload this later, as I'm a git noob, and am having difficulty understanding how to publish my changes (in an efficient way). I'll try the brute-force method first, of simply patching a zipped v4.3.1 release. When it's done, I'll upload it as a separate project, then link to it here.
+All this only became possible after modifying the underlying esp-idf. So the source won't actually compile unless you use the same modified esp-idf that I am using. I'll upload this later, as I'm a git noob, and am having difficulty understanding how to publish my changes (in an efficient way). I'll try patching a zipped v4.3.1 release. When it's done, I'll upload it as a separate project, then link to it here.
 
 ## Pin Mappings:
 UART0:
