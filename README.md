@@ -1,79 +1,34 @@
-| Supported Targets | ESP32-S2 |
-| ----------------- | -------- |
+# ESPill-Serial-Godzilla (ESP32s2/ESP32s3 2/3-Port USB-UART Serial Adapter)
 
-# TinyUSB Sample Descriptor
+This project has been inspired by https://github.com/r2axz/bluepill-serial-monster. It attempts to be its analog for the esp32s* chips. It turns any esp32s* into a usb-uart adapter, meaning you plug its usb-interface into your PC, and it enumerates 2 (esp32s2) or 3 (esp32s3) Serial Ports, each one is mapped to one of the hardware serial interfaces of the espill, which you can use to interface to any 3rd party device that exposes a serial interface. It then works like any ft2232/ch340/etc. This means you never need to buy any dedicated usb-uart adapter to program any boards over serial, since the esp32s* have a feature that if you set them into flashing mode, they automatically expose a built-in permanent virtual serial port over usb, through which you can download any firmware into it. So you can load this (espill-godzilla) itself onto that esp32s2, and once you reboot it, it becomes a 2/3-channel serial programmer for any other mcus you have, be they other esp32s*/esp32/esp8266/stm32f1/etc...
 
-(See the README.md file in the upper level 'examples' directory for more information about examples.)
+The clou is that it also supports setting/toggling dtr/rts pins, which are used by many tools (such as esptool), to automatically set the target chip into flashing mode and reset it.
 
-This example shows how to set up ESP32-S2 chip to work as a USB Serial Device.
+Currently, I've only tested it on an esp32s2, as I don't have any esp32s3 yet (in the mail). Thus I don't have any binaries for the esp32s3 yet. Note the esp32s2 only has 2 hardware uarts, so you only get 2 channels. The esp32s3 only has 3, so you get 3. Theoretically, usb allows 5 independent serial (USB CDC-ACM) channels, but atleast the esp32s2 is limited to only 5 active USB IN-endpoints at a time, meaning even though 5 ports would show up on the PC if desired, only 3 of them would actually work (atleast for 1 direction). There might be some workarounds to atleast support these partially (ex. 1-way communication), I'll get around to this when I have time.
 
-As a USB stack, a TinyUSB component is used.
+All this only became possible after modifying the underlying esp-idf. So the source won't actually compile unless you use the same modified esp-idf that I am using. I'll upload this later, as I'm a git noob, and am having difficulty understanding how to publish my changes (in an efficient way). I'll try the brute-force method first, of simply patching a zipped v4.3.1 release. When it's done, I'll upload it as a separate project, then link to it here.
 
-## How to use example
+## Pin Mappings:
+UART0:
+RX: 7
+Tx: 8
+DTR: 9
+RTS: 10
 
-### Hardware Required
+UART1:
+RX: 11
+TX: 12
+DTR: 13
+RTS: 14
 
-- Any board with the ESP32-S2 chip with USB connectors or with exposed USB's D+ and D- (DATA+/DATA-) pins.
+Note: On your PC, different ports enumerate with different numbers, depending on which are currently available. This mapping isn't fixed. But generally, they will be in order, and the lowest number there corresponds to uart0 and so on.
 
-If the board has no USB connector, but has the pins connect pins directly to the host (e.g. with DIY cable from any USB connection cable)
+# How to Setup:
 
-```
-ESP32-S2 BOARD          USB CONNECTOR (type A)
-                          --
-                         | || VCC
-    [GPIO 19]  --------> | || D-
-    [GPIO 20]  --------> | || D+
-                         | || GND
-                          --
-```
+Just download a finished binary from the releases section (to the right of the github page), then go to where you downloaded it in cmd/bash, and flash that image to your esp using this command (assuming you know what esptool is and have it setup in your path):
+esptool.py -p PORT -b BAUD write_flash 0 espill_serial_godzilla-esp32s2.bin
 
-You can also use power from the USB connector.
+ofcourse replace PORT with whatever serial port you usually use for flashing, and replace BAUD with whatever flashing speed you want, usually 921600 is good. If your PC doesn't already have a serial port, and you don't have any usb-uart adapters, then manually place the esp32s2 into flashing-mode (connect GPIO0 to GND, then connect EN to GND then to 3.3V). Ofcourse you have to connect its usb-pins to any USB port on your PC first (google it). Then a serial port will automatically be detected by your PC and you can use it to flash to the esp32s2/esp32s3.
 
-### Build and Flash
-
-Build the project and flash it to the board, then run monitor tool to view serial output:
-
-```bash
-idf.py -p PORT flash monitor
-```
-
-(Replace PORT with the name of the serial port to use.)
-
-(To exit the serial monitor, type ``Ctrl-]``.)
-
-See the Getting Started Guide for full steps to configure and use ESP-IDF to build projects.
-
-## Serial Connection
-
-After program's start and getting of the message of readiness (`Serial device is ready to connect`) you can connect to the board using any serial port terminal application (e.g. CoolTerm).
-
-## Example Output
-
-After the flashing you should see the output:
-
-```
-I (346) example: USB initialization
-I (346) TinyUSB: Driver installation...
-I (346) TinyUSB - Descriptors Control: Setting of a descriptor:
-.bDeviceClass       = 239
-.bDeviceSubClass    = 2,
-.bDeviceProtocol    = 1,
-.bMaxPacketSize0    = 64,
-.idVendor           = 0x0000303a,
-.idProduct          = 0x00004001,
-.bcdDevice          = 0x00000100,
-.iManufacturer      = 0x01,
-.iProduct           = 0x02,
-.iSerialNumber      = 0x03,
-.bNumConfigurations = 0x01
-
-I (362) TinyUSB: Driver installed
-I (362) example: USB initialization DONE
-I (922) example: Line state changed! dtr:0, rst:0
-```
-
-Let's try to send a string "espressif" and get the return string in your console on PC:
-
-```
-I (18346) example: Got data (9 bytes): espressif
-```
+# Future Plans
+Support JTAG and ST-Link's SWD Interface into a single cross-platform tool, hopefully also with support for multiple independent channels (allowing simultaneous flashing and debugging of several heterogeneous boards/chips).
