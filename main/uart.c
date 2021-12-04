@@ -23,6 +23,7 @@ void uartSetup()
 void uartLoop(void* args)
 {
     uint8_t num=*(uint8_t*)args;
+    //printf("uart Loop: %d\n",num);
     uint8_t buf[11];
     buf[10] = 0;
     while (true)
@@ -30,8 +31,12 @@ void uartLoop(void* args)
         int count = uart_read_bytes(num, buf, sizeof(buf) - 1, 1);
         if (count > 0)
         {
+            //printf("uart%d: forwarding %d bytes...",num,count); fflush(stdout);
             tinyusb_cdcacm_write_queue(num, buf, count);
+            //printf("done. Flushing..."); fflush(stdout);
             tinyusb_cdcacm_write_flush(num, portMAX_DELAY);
+            //printf("done\n");
         }
+        //else printf("uart%d: No data\n",num);
     }
 }

@@ -1,7 +1,7 @@
 #include "usb.h"
 #include "esp_debug_helpers.h"
 
-#define CDC_COUNT UART_COUNT
+#define CDC_COUNT CONFIG_CFG_TUD_CDC
 static uint8_t buf[USBBUFSIZE + 2];
 
 void usbSetup()
