@@ -26,6 +26,7 @@ Note: On your PC, different ports enumerate with different numbers, depending on
 # How to Setup:
 
 Just download a finished binary from the releases section (to the right of the github page), then go to where you downloaded it in cmd/bash, and flash that image to your esp using this command (assuming you know what esptool is and have it setup in your path):
+esptool.py -p PORT -b BAUD erase_flash
 esptool.py -p PORT -b BAUD write_flash 0 espill_serial_godzilla-esp32s2.bin
 
 ofcourse replace PORT with whatever serial port you usually use for flashing, and replace BAUD with whatever flashing speed you want, usually 921600 is good. If your PC doesn't already have a serial port, and you don't have any usb-uart adapters, then manually place the esp32s2 into flashing-mode (connect GPIO0 to GND, then connect EN to GND then to 3.3V). Ofcourse you have to connect its usb-pins to any USB port on your PC first (google it). Then a serial port will automatically be detected by your PC and you can use it to flash to the esp32s2/esp32s3.
