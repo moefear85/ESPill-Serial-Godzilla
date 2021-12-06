@@ -21,7 +21,7 @@ TX: 12
 DTR: 13
 RTS: 14
 
-This mapping applies only to the esp32s2. I haven't extended it to esp32s3 yet. If you want to do so on your own, you have to add pins in "gpio.h" and modify 1 or 2 defines relating to UART_COUNT and CDC_COUNT.
+This mapping applies only to the esp32s2. I haven't extended it to esp32s3 yet, so even though it should work as-is on an esp32s3, you'd only get 2 ports. If you want 3, you'll have to do so on your own, you have to add pins in "gpio.h" and modify 1 or 2 defines relating to UART_COUNT and CDC_COUNT.
 
 Note: On your PC, different ports enumerate with different numbers, depending on which are currently available. This mapping isn't fixed. But generally, they will be in order, and the lowest number there corresponds to uart0 and so on.
 
